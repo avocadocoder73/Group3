@@ -88,6 +88,7 @@ class CourseTests(TestCase):
     def test_delete_course_2(self):
         self.assertEqual(False,functions.Course.delete_course("12345"),msg="Should return false since course does not exist")
 
+"New commit"
 
 class LabSectionTests(TestCase):
     ""
