@@ -94,4 +94,39 @@ class LabSectionTests(TestCase):
     ""
 
 class TATests(TestCase):
-    ""
+    def setup(self):
+        temp_user = User(user_id=1, name="Test", username="test_user", password="PASSWORD", email="test@uwm.edu",
+                         phone_number=1234567890, address="123 1st street")
+        temp_user.save()
+        ta_1 = TA(user_id=temp_user, ta_id=1)
+        ta_1.save()
+
+
+    def test_get_ta_info_1(self):
+        test_dic = {"user_id":1,"ta_id":1}
+        self.assertEqual(test_dic,functions.TA.get_ta_info(1),msg="Should be equal since TA is in the database")
+
+    def test_get_ta_info_2(self):
+        test_dic = {}
+        self.assertEqual(test_dic, functions.TA.get_ta_info(2), msg="Should be equal since TA is not in the database")
+
+    def test_update_ta_info_1(self):
+        new_dic = {"user_id":2,"ta_id":1}
+        functions.TA.update_ta_info(new_dic)
+        self.assertEqual(new_dic,functions.TA.get_ta_info(2),msg="Should be equal because of updating user")
+
+    def test_update_ta_info_2(self):
+        new_dic = {"user_id": 2, "ta_id": 1}
+        self.assertEqual(True, functions.TA.update_ta_info(new_dic), msg="Should be equal because user exists in database")
+
+    def test_update_ta_info_3(self):
+        new_dic = {"user_id": 2, "ta_id": 2}
+        self.assertEqual(False, functions.TA.update_ta_info(new_dic), msg="Should be equal because user does not exists in database")
+
+    def test_update_ta_info_4(self):
+        new_dic = {}
+        self.assertEqual(False, functions.TA.update_ta_info(new_dic), msg="Should be equal because dictionary is empty")
+
+    def test_delete_ta_1(self):
+        functions.TA.delete_ta(ta_id=1)
+        self.assertEqual({}, functions.TA.get_ta_info(ta_id=1),msg="Should be equal since TA exists in database and should be deleted")
