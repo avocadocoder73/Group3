@@ -109,7 +109,7 @@ class TA:
     Represents a TA in the system.
     """
 
-    def get_ta_info(self,user_id) -> dict:
+    def get_ta_info(self,ta_id) -> dict:
         """
         Retrieves information about the TA .
 
@@ -129,7 +129,7 @@ class TA:
         Parameter Usage: info is a dictionary containing updated TA information.
         """
 
-    def delete_ta(self,user_id) -> bool:
+    def delete_ta(self,ta_id) -> bool:
         """
         Deletes the TA from the database.
 
