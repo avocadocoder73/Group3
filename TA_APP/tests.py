@@ -50,14 +50,14 @@ class UserTests(TestCase):
 class CourseTests(TestCase):
 
     def setUp(self):
-        user = User(user_id=1, name="Test", username="test_user", password="PASSWORD", email="test@uwm.edu",
+        user = User(user_id=1, name="Test",password="PASSWORD", email="test@uwm.edu",
                     phone_number=1234567890, address="123 1st street")
         instructor = Instructor(user_id=user,instructor_id=1)
         temp = Course(course_id="11111", course_name="Test Course",course_code=101)
 
     def test_get_course_info_1(self):
         test_dic = {'course_id': '11111', 'course_name': 'Test Course', 'course_code':101}
-        self.assertEqual(test_dic, functions.Course.get_course_info("11111"), msg="Course exists in the datbase should match result")
+        self.assertEqual(test_dic, functions.Course.get_course_info(self,"11111"), msg="Course exists in the datbase should match result")
 
     def test_get_course_info_2(self):
         test_dic = {}
