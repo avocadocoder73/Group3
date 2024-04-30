@@ -12,7 +12,7 @@
         }
 
         .login-container a:hover {
-            background-color: #d63031
+            background-color: #d63031;
         }
 
         .logo-3 {
@@ -118,8 +118,8 @@
             border-radius: 20px;
             background-color: #e74c3c; /* Ensure this color is correct and not being overridden */
             font-size: 20px;
+            font-family: 'Oswald', sans-serif;
         }
-
 
         .logout-container {
             position: absolute;
