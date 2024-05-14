@@ -20,7 +20,7 @@ class Login(View):
         # Redirects to the appropriate dashboard based on user type.
         if verify == 'S':  # Supervisor (or Administrator)
             request.session['username'] = username
-            return render(request, 'homepage.html', {})
+            return render(request, 'homepage.html', {"status": "Signed In"})
         elif verify == 'I':  # Instructor
             request.session['username'] = username
             return redirect('instructor_dashboard')
@@ -56,32 +56,43 @@ class AccountManagement(View):
 
     def post(self, request):
         # Handles account management form submissions.
+        print(request.POST)
         if request.POST.get('status') == "delete":
             try:
+
                 # Deletes user account.
                 identity = request.POST.get('delusername')
-                functions.User_func.Delete(self, identity)
+
+                status = functions.User_func.Delete(self, identity)
+                print(status)
+                if status is False:
+                    raise Exception("Deletion Failed")
+
                 return render(request, 'accountmanagement.html', {'delete_message': 'Account Deleted Successfully'})
             except Exception as e:
                 # Renders account management page with error message.
                 return render(request, 'accountmanagement.html',
-                              {'delete_message': 'Account Deletion Failed', 'error': str(e)})
+                              {'message': 'Account Deletion Failed', 'error': str(e)})
         elif request.POST.get('status') == "create":
             try:
                 # Creates new user account.
-                status = functions.User_func.Create(self, {"username": request.POST.get('username'),
-                                                           "password": request.POST.get('password'),
-                                                           "email": request.POST.get('email'),
-                                                           "name": request.POST.get('name'),
-                                                           "phone_number": request.POST.get('phone'),
-                                                           "address": request.POST.get('address'),
-                                                           "type": request.POST.get('role'),
-                                                           "skills": ''})
+
+
+
+                status = functions.User_func.Create(self, {"username": request.POST.get('username') or False,
+                                                           "password": request.POST.get('password') or False,
+                                                           "email": request.POST.get('email') or False,
+                                                           "name": request.POST.get('name') or False,
+                                                           "phone_number": request.POST.get('phone') or False,
+                                                           "address": request.POST.get('address') or False,
+                                                           "type": request.POST.get('role') or False,
+                                                           "skills": '' })
                 if status is False:
                     raise Exception("Account not created")
                 return render(request, 'accountmanagement.html', {'message': 'Account Created Successfully'})
             except Exception as e:
                 # Renders account management page with error message.
+
                 return render(request, 'accountmanagement.html',
                               {'message': "Duplicate username or missing form field"})
         elif request.POST.get('logout') == "Log out":
@@ -108,16 +119,16 @@ class CourseManagement(View):
         if request.POST.get('createcourse') == "true":
             try:
                 # Creates new course.
-                status = functions.Course_func.Create(self, {"course_id": request.POST.get("courseid"),
-                                                             "course_name": request.POST.get('name'),
-                                                             "course_term": request.POST.get('term')})
+                status = functions.Course_func.Create(self, {"course_id": request.POST.get("courseid") or False,
+                                                             "course_name": request.POST.get('name') or False,
+                                                             "course_term": request.POST.get('term') or False})
                 if status is False:
                     raise Exception("Course not created")
                 return render(request, 'coursemanagement.html', {'course_message': 'Course Created Successfully'})
             except Exception as e:
                 # Renders course management page with error message.
                 return render(request, 'coursemanagement.html',
-                              {'course_message': 'Course Creation Failed', 'error': str(e)})
+                              {'create_course': 'Course Creation Failed', 'error': str(e)})
         elif request.POST.get('createcoursesection') == "true":
             try:
                 # Creates new course section.
@@ -131,11 +142,11 @@ class CourseManagement(View):
                 if status is False:
                     raise Exception("Course Section not created")
                 return render(request, 'coursemanagement.html',
-                              {'course_section_message': 'Course Section Created Successfully'})
+                              {'create_course_section_message': 'Course Section Created Successfully'})
             except Exception as e:
                 # Renders course management page with error message.
                 return render(request, 'coursemanagement.html',
-                              {'course_section_message': 'Course Section Creation Failed', 'error': str(e)})
+                              {'create_course_section_message': 'Course Section Creation Failed', 'error': str(e)})
         elif request.POST.get('createlabsection') == "true":
             try:
                 # Creates new lab section.
@@ -188,7 +199,7 @@ class ViewUsers(View):
         # Displays the view users page.
         if request.session.get('username'):
             # Populating the table with database
-            users = User.objects.all()
+            users = functions.User_func.get_all(self)
             return render(request, 'viewusers.html', {'users': users})
         else:
             # Redirects to login if session is not active.
@@ -248,17 +259,11 @@ class AssignUsers(View):
 class EditContactInfo(View):
     def get(self, request):
 
-
         user = functions.User_func.get(self, "username", request.session.get('username'))
-
-        print(user)
 
         return render(request, 'editcontactinfo.html', {'oldemail': user[0]['email'], 'oldphone':user[0]['phone_number'], 'oldaddress':user[0]['address']})
 
     def post(self, request):
-
-
-
         try:
 
             data = {
@@ -267,7 +272,7 @@ class EditContactInfo(View):
                 'phone_number': request.POST.get('phone'),
                 'address': request.POST.get('address')
             }
-
+            print(data)
 
 
             status = functions.User_func.Edit(self, data)
@@ -288,12 +293,6 @@ class EditContactInfo(View):
             return render(request, 'editcontactinfo.html', {'message': e})
 
 
-
-    def post(self, request):
-        # Handles logout.
-        if request.POST.get('logout') == "Log out":
-            logout(request)
-            return redirect('/')
 
 
 class Notifications(View):

@@ -87,6 +87,10 @@ class User_func(Change, Getting):
                 and 'email' in info and 'phone_number' in info and 'address' in info and 'type' in info):
             return False
 
+        if False in info.values():
+            return False
+
+
         """Check for duplicates"""
         if User.objects.filter(username=info['username']).exists():
             return False
@@ -276,6 +280,9 @@ class Course_func(Change, Getting):
 
         """Check that required fields are present"""
         if not ('course_id' in info and 'course_name' in info and 'course_term' in info):
+            return False
+
+        if False in info.values():
             return False
 
         """Check for duplicates"""
