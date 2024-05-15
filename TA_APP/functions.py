@@ -439,7 +439,7 @@ class CourseSection_func(Change, Getting):
             return False
 
         # Check if all required fields are present
-        required_fields = ['section_id', 'course', 'section_number', 'Time', 'Location', 'credits', 'instructor']
+        required_fields = ['section_id', 'course', 'section_number', 'Time', 'Location', 'credits']
         if not all(field in info for field in required_fields):
             return False
 
@@ -449,10 +449,15 @@ class CourseSection_func(Change, Getting):
             return False
 
         # Create and save the new course section
-        course_section = CourseSection(section_id=info['section_id'], section_number=info['section_number'],
-                                       course=Course.objects.get(course_id=info['course']), Time=info['Time'],
-                                       Location=info['Location'], credits=info['credits'],
-                                       instructor=User.objects.get(name=info['instructor']))
+        if 'instructor' in info:
+            course_section = CourseSection(section_id=info['section_id'], section_number=info['section_number'],
+                                           course=Course.objects.get(course_id=info['course']), Time=info['Time'],
+                                           Location=info['Location'], credits=info['credits'],
+                                           instructor=User.objects.get(name=info['instructor']))
+        else:
+            course_section = CourseSection(section_id=info['section_id'], section_number=info['section_number'],
+                                           course=Course.objects.get(course_id=info['course']), Time=info['Time'],
+                                           Location=info['Location'], credits=info['credits'])
         course_section.save()
 
         return True
@@ -473,14 +478,8 @@ class CourseSection_func(Change, Getting):
             course_section = CourseSection.objects.get(section_id=info['section_id'])
             # Update the course section attributes with the provided data
             for key, value in info.items():
-                if key == 'instructor':
-                    # If the key is 'instructor', retrieve the user object from the database
-                    instructor = User.objects.get(username=value)
-                    # Set the instructor attribute of the course section to the retrieved user object
-                    setattr(course_section, key, instructor)
-                else:
-                    # Set the attribute of the course section to the provided value
-                    setattr(course_section, key, value)
+                # Set the attribute of the course section to the provided value
+                setattr(course_section, key, value)
             # Save the updated course section
             course_section.save()
             return True
@@ -569,6 +568,29 @@ class CourseSection_func(Change, Getting):
             except ObjectDoesNotExist:
                 # If the course section with the provided section_id does not exist in the database,return an empty list
                 return []
+        elif query == 'course':
+            try:
+                # Attempt to retrieve the course section from the database using its section_id
+                course_sections = CourseSection.objects.all()
+
+                # Construct a dictionary containing the course section information
+                for course_section in course_sections:
+                    if course_section.course == identity:
+                        result = {
+                            'section_id': course_section.section_id,
+                            'section_number': course_section.section_number,
+                            'course': course_section.course.course_id,
+                            'Time': course_section.Time,
+                            'Location': course_section.Location,
+                            'credits': course_section.credits,
+                            'instructor': course_section.instructor.name
+                        }
+                        results.append(result)
+                # Return a list containing the constructed dictionary
+                return results
+            except ObjectDoesNotExist:
+                # If the course section with the provided section_id does not exist in the database,return an empty list
+                return []
         else:
             # If the query is not for section_id, return an empty list
             return []
@@ -627,7 +649,7 @@ class LabSection_func(Change, Getting):
             return False
 
         # Check if all required fields are present
-        required_fields = ['section_id', 'course', 'section_number', 'Time', 'Location', 'Type', 'ta', 'course_section']
+        required_fields = ['section_id', 'course', 'section_number', 'Time', 'Location', 'Type', 'course_section']
         if not all(field in info for field in required_fields):
             return False
 
@@ -660,14 +682,8 @@ class LabSection_func(Change, Getting):
 
             # Iterate over each key-value pair in the info dictionary
             for key, value in info.items():
-                # Check if the key is 'ta'
-                if key == 'ta':
-                    # If key is 'ta', retrieve the User object using the provided username and set it as the value
-                    ta = User.objects.get(username=value)
-                    setattr(lab_section, key, ta)
-                else:
-                    # For other keys, set the corresponding attribute of lab_section to the provided value
-                    setattr(lab_section, key, value)
+                # For other keys, set the corresponding attribute of lab_section to the provided value
+                setattr(lab_section, key, value)
 
             # Save the updated lab section
             lab_section.save()

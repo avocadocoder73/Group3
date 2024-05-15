@@ -80,17 +80,6 @@
                 </td>
             </tr>
             <tr>
-                <td><label>Section Number:</label></td>
-                <td>
-                    <select name="sectionnumber">
-                        <option value="">Select Section Number</option>
-                        {% for section_number in section_numbers %}
-                            <option value="{{ section_number }}">{{ section_number }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-            </tr>
-            <tr>
                 <td colspan="2" class="centered">
                     {{ message }}
                     <button type="submit" name="assignuser" value="true">Submit</button>

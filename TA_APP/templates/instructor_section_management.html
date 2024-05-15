@@ -29,30 +29,19 @@
 
         </div>
         <ul class="menu-bar">
-            <li><a href="{% url 'instructor_edit_contact' %}"><span class="material-symbols-outlined">edit_note</span>Edit Contact Information</a></li>
-            <li><a href="{% url 'instructor_section_management' %}"><span class="material-symbols-outlined">folder_managed</span>Section Management</a></li>
-            <li><a href="{% url 'instructor_view_courses' %}"><span class="material-symbols-outlined">folder_open</span>View Courses</a></li>
-            <li><a href="{% url 'instructor_view_users' %}"><span class="material-symbols-outlined">person_search</span>View Users</a></li>
+            <li><a href="{% url 'instructor_edit_contact' %}"><span class="material-symbols-outlined">edit</span>Edit Contact Info</a></li>
+            <li><a href="{% url 'instructor_section_management' %}"><span class="material-symbols-outlined">group</span>Section Management</a></li>
+            <li><a href="{% url 'instructor_view_courses' %}"><span class="material-symbols-outlined">class</span>View Courses</a></li>
+            <li><a href="{% url 'instructor_view_users' %}"><span class="material-symbols-outlined">search</span>View Users</a></li>
             <li><a href="{% url 'instructor_notifications' %}"><span class="material-symbols-outlined">notifications</span>Send Notifications</a></li>
         </ul>
     </div>
 
   <div class="form-container">
-    <h2>Assign Instructor to Course</h2>
-    <form action="/assign-users/" method="post">
+    <h2>Assign Instructor to Course section</h2>
+    <form action="" method="post">
         {% csrf_token %}
         <table class="form-table">
-            <tr>
-                <td><label>Name:</label></td>
-                <td>
-                    <select name="names">
-                        <option value="">Select Name</option>
-                        {% for name in names %}
-                            <option value="{{ name }}">{{ name }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-            </tr>
             <tr>
                 <td><label>Course ID:</label></td>
                 <td>
@@ -67,29 +56,18 @@
             <tr>
                 <td><label>Section ID:</label></td>
                 <td>
-                    <select name="sectionid">
+                    <select name="coursesectionid">
                         <option value="">Select Section ID</option>
-                        {% for section_id in section_ids %}
-                            <option value="{{ section_id }}">{{ section_id }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td><label>Section Number:</label></td>
-                <td>
-                    <select name="sectionnumber">
-                        <option value="">Select Section Number</option>
-                        {% for section_number in section_numbers %}
-                            <option value="{{ section_number }}">{{ section_number }}</option>
+                        {% for section_id in course_section_ids %}
+                            <option value="{{ section_id.section_id }}"> {{ section_id.course.course_name }} {{ section_id.section_id }}</option>
                         {% endfor %}
                     </select>
                 </td>
             </tr>
             <tr>
                 <td colspan="2" class="centered">
-                    {{ message }}
-                    <button type="submit" name="assignuser" value="true">Submit</button>
+                    {{ assign_course_section }}
+                    <button type="submit" name="assigncoursesection" value="true">Submit</button>
                 </td>
             </tr>
 
@@ -98,8 +76,8 @@
 </div>
 
   <div class="form-container">
-    <h2>Assign TA to Course</h2>
-    <form action="/assign-users/" method="post">
+    <h2>Assign TA to Lab Section</h2>
+    <form action="" method="post">
         {% csrf_token %}
         <table class="form-table">
             <tr>
@@ -108,7 +86,7 @@
                     <select name="names">
                         <option value="">Select Name</option>
                         {% for name in names %}
-                            <option value="{{ name }}">{{ name }}</option>
+                            <option value="{{ name.name }}">{{ name.name }}</option>
                         {% endfor %}
                     </select>
                 </td>
@@ -116,7 +94,7 @@
             <tr>
                 <td><label>Course ID:</label></td>
                 <td>
-                    <select name="courseid">
+                    <select name="lab_courseid">
                         <option value="">Select Course ID</option>
                         {% for course in courses %}
                             <option value="{{ course.course_id }}">{{ course.course_name }} {{ course.course_id }}</option>
@@ -125,98 +103,25 @@
                 </td>
             </tr>
             <tr>
-                <td><label>Section ID:</label></td>
+                <td><label>Lab Section ID:</label></td>
                 <td>
                     <select name="sectionid">
                         <option value="">Select Section ID</option>
                         {% for section_id in section_ids %}
-                            <option value="{{ section_id }}">{{ section_id }}</option>
+                            <option value="{{ section_id.section_id }}">{{ section_id.section_id }}</option>
                         {% endfor %}
                     </select>
                 </td>
             </tr>
-            <tr>
-                <td><label>Section Number:</label></td>
-                <td>
-                    <select name="sectionnumber">
-                        <option value="">Select Section Number</option>
-                        {% for section_number in section_numbers %}
-                            <option value="{{ section_number }}">{{ section_number }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-            </tr>
-            <tr>
                 <td colspan="2" class="centered">
-                    {{ message }}
-                    <button type="submit" name="assignuser" value="true">Submit</button>
+                    {{ assign_lab_section }}
+                    <button type="submit" name="assignlabsection" value="true">Submit</button>
                 </td>
             </tr>
 
         </table>
     </form>
 </div>
-
-  <div class="form-container">
-    <h2>Assign User to Course</h2>
-    <form action="/assign-users/" method="post">
-        {% csrf_token %}
-        <table class="form-table">
-            <tr>
-                <td><label>Name:</label></td>
-                <td>
-                    <select name="names">
-                        <option value="">Select Name</option>
-                        {% for name in names %}
-                            <option value="{{ name }}">{{ name }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td><label>Course ID:</label></td>
-                <td>
-                    <select name="courseid">
-                        <option value="">Select Course ID</option>
-                        {% for course in courses %}
-                            <option value="{{ course.course_id }}">{{ course.course_name }} {{ course.course_id }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td><label>Section ID:</label></td>
-                <td>
-                    <select name="sectionid">
-                        <option value="">Select Section ID</option>
-                        {% for section_id in section_ids %}
-                            <option value="{{ section_id }}">{{ section_id }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td><label>Section Number:</label></td>
-                <td>
-                    <select name="sectionnumber">
-                        <option value="">Select Section Number</option>
-                        {% for section_number in section_numbers %}
-                            <option value="{{ section_number }}">{{ section_number }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" class="centered">
-                    {{ message }}
-                    <button type="submit" name="assignuser" value="true">Submit</button>
-                </td>
-            </tr>
-
-        </table>
-    </form>
-</div>
-
     <footer>
         &copy 2024 Digital Dream Team, CS361. All rights reserved.
     </footer>

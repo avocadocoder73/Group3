@@ -30,10 +30,10 @@
     <div class="sidebar-header"></div>
     <ul class="menu-bar">
         <ul class="menu-bar">
-            <li><a href="{% url 'instructor_edit_contact' %}"><span class="material-symbols-outlined">edit_note</span>Edit Contact Information</a></li>
-            <li><a href="{% url 'instructor_section_management' %}"><span class="material-symbols-outlined">folder_managed</span>Section Management</a></li>
-            <li><a href="{% url 'instructor_view_courses' %}"><span class="material-symbols-outlined">folder_open</span>View Courses</a></li>
-            <li><a href="{% url 'instructor_view_users' %}"><span class="material-symbols-outlined">person_search</span>View Users</a></li>
+            <li><a href="{% url 'instructor_edit_contact' %}"><span class="material-symbols-outlined">edit</span>Edit Contact Info</a></li>
+            <li><a href="{% url 'instructor_section_management' %}"><span class="material-symbols-outlined">group</span>Section Management</a></li>
+            <li><a href="{% url 'instructor_view_courses' %}"><span class="material-symbols-outlined">class</span>View Courses</a></li>
+            <li><a href="{% url 'instructor_view_users' %}"><span class="material-symbols-outlined">search</span>View Users</a></li>
             <li><a href="{% url 'instructor_notifications' %}"><span class="material-symbols-outlined">notifications</span>Send Notifications</a></li>
         </ul>
     </ul>
@@ -45,7 +45,6 @@
         <table class="form-table">
             <thead>
                 <tr>
-                    <th>User ID</th>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Role ID</th>
@@ -55,7 +54,6 @@
             <tbody>
                 {% for user in users %}
                 <tr>
-                    <td>{{ user.id }}</td>
                     <td>{{ user.name }}</td>
                     <td>{{ user.email }}</td>
                     <td>{{ user.type }}</td>
