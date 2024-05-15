@@ -1,14 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-head>
+<head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="/static/homepageStyle.css">
-    <title>Instructor - Send Notifications</title>
+    <link rel="stylesheet" type="text/css" href="/static/sendnotificationsStyle.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+    <title>Instructor Dashboard - Send Notifications</title>
 </head>
 <body>
-    <div class="container">
-        <h2>Send Notifications</h2>
-        <p>This is a placeholder page for sending notifications.</p>
+    <header>
+        <div class="logout-container">
+            <form action="" method="post">
+                {% csrf_token %}
+                <input type="submit" name="logout" value="Log out" />
+            </form>
+        </div>
+        <div class="logo-3">
+            <a href="#">
+                <h3>TA Scheduler</h3>
+                <p>Universities of Wisconsin</p>
+            </a>
+        </div>
+    </header>
+
+    <div class="sidebar">
+        <!-- Sidebar links (same as before) -->
     </div>
+
+    <div class="form-container">
+        <h2>Send Notifications</h2>
+        <form action="/instructor/sendnotifications/" method="post">
+           {% csrf_token %}
+           <label for="message">Message:</label>
+           <textarea id="message" name="message"></textarea>
+           <button type="submit">Send Notification</button>
+        </form>
+    </div>
+
+    <footer>
+        &copy; 2024 Digital Dream Team, CS361. All rights reserved.
+    </footer>
 </body>
 </html>

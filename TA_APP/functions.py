@@ -358,6 +358,7 @@ class Course_func(Change, Getting):
     In: query string field to search based off of, identity fields value to search for
     Out: List of dictionaries containing the given query
     """
+
     def get(self, query: str, identity: str) -> list:
         """Create empty lists"""
         return_list = []
@@ -403,6 +404,7 @@ class Course_func(Change, Getting):
     In: None
     Out: List of dictionaries containing all Courses.
     """
+
     def get_all(self) -> list:
         """Get all courses in table"""
         course_list = Course.objects.all()
@@ -430,6 +432,7 @@ class CourseSection_func(Change, Getting):
     In: info is a dictionary containing CourseSection information.
     Out: Boolean to determine if operation was accomplished or not.
     """
+
     def Create(self, info: dict) -> bool:
         # Check if input is empty
         if not info:
@@ -795,3 +798,95 @@ class LabSection_func(Change, Getting):
 
         # Return the list of dictionaries containing information about all lab sections
         return results
+
+
+"""Notification class for sending notifications"""
+
+
+class Notify():
+    """
+    email. Sends an email based on the given txt file
+
+    Preconditions: string Txt file name contains valid information for sending an email.
+    Postconditions: Sends an email to a recipient. Returns a bool if it works well.
+    Side Effects: None.
+    In: filename: str for file name contains information
+    Out: bool if the operations fails or not
+    """
+
+    """"!!! This is an email code I have from a previous project since it was not part of our scope this sprint 
+             I put it in for what emailing implementation could look like."""
+    def email(self,filename:str) -> bool:
+        """with open(arg,encoding="utf-8") as f:
+            #Input file lines to read from
+            contents = f.readlines()
+            con_email = contents[1].split("@",1)
+            #print(contents)
+            if len(con_email) != 1:
+                #Domain to send to
+                con_domain = con_email[1].split(">",1)[0]
+            else:
+                #If there is a wrong formating with no @ in email address
+                print("Input email is formatted wrong.")
+                return False
+            #Format the email from
+            from_email = contents[0].split("<")[1]
+            from_email = from_email.split(">")[0]
+            from_body = f"MAIL FROM: <{from_email}>\r\n"
+            #Format the email to
+            to_email = contents[1].split("<")[1]
+            to_email = to_email.split(">")[0]
+            to_body = f"RCPT TO: <{to_email}>\r\n"
+            #Format the subject
+            subject = contents[2].split("\n")[0]
+            #Format the body
+            message_body = contents[4]
+        #Get the output from the terminal command
+        with Popen(f"nslookup -q=MX {con_domain}",shell=True,stdout=PIPE,stderr=PIPE) as ter_out:
+            output, error = ter_out.communicate()
+        if error.find(b"Non-existent domain") != -1:
+            #If the domain deos not exsist we will not be sending an email to it
+            print("Domain does not exists %s",con_domain)
+            return False
+        #Find the mail server
+        MAIL_SERVER = b''
+        MX = output.split(b"mail exchanger = ",1)
+        if len(MX)>1:
+            MAIL_SERVER = MX[1].split(b"\r\n",1)[0]
+        else:
+            print("Mail Exchange server not found.")
+            return False
+        with socket.socket(socket.AF_INET,socket.SOCK_STREAM) as s_stream:
+            #Connect to SMTP server
+            s_stream.connect((MAIL_SERVER,25))
+            connect_ret = s_stream.recv(1024)
+            #Send hello to server
+            #print(connect_ret)
+            HELLO = "HELO Nick\r\n"
+            s_stream.send(HELLO.encode())
+            hello_ret = s_stream.recv(1024)
+            #print(hello_ret)
+            #Mail sender
+            s_stream.send(from_body.encode())
+            from_ret = s_stream.recv(1024)
+            #print(from_ret)
+            #Mail receiver
+            s_stream.send(to_body.encode())
+            recv_ret = s_stream.recv(1024)
+            if recv_ret.find(b"501") ==0 or recv_ret.find(b"503") ==0 or recv_ret.find(b"550") == 0:
+                print("Recipient does not exist in this domain: %s",con_domain)
+                return False
+            #print(recv_ret)
+            #Ask to send data
+            s_stream.send(b"DATA\r\n")
+            data_ret = s_stream.recv(1024)
+            #print(data_ret)
+            #Send message
+            message=f"From:{from_email}\r\nTo:{to_email}
+            \r\n{subject}\r\n\r\n{message_body}\r\n.\r\n"
+            s_stream.send(message.encode())
+            message_ret = s_stream.recv(1024)
+            if message_ret.find(b'250') != -1:
+                print("Successfully sent email to %s",to_email)
+                return True
+            """
